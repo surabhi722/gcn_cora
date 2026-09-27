@@ -530,7 +530,7 @@ with c4:
 try:
     sess = load_model()
 except Exception as e:
-    st.error(f"Could not load model: {e}\n\nMake sure gcn.onnx and gcn.onnx.data are in /tmp/")
+    st.error(f"Could not load model: {e}\n\nMake sure gcn.onnx and gcn_onnx.data are in the same folder as app.py")
     st.stop()
 
 
@@ -592,7 +592,7 @@ if st.session_state.probs is not None:
     with tab1:
         sel_node = st.number_input("Highlight node (ID)", 0, n-1, 0, label_visibility="visible")
         fig_graph = build_graph_figure(features, edges, preds, probs, selected_node=sel_node)
-        st.plotly_chart(fig_graph, use_container_width=True)
+        st.plotly_chart(fig_graph, use_container_width=True, key="graph_view")
 
         # Highlighted node detail
         cls  = int(preds[sel_node])
@@ -622,7 +622,7 @@ if st.session_state.probs is not None:
 
         with col2:
             st.markdown('<div class="section-head">Class probabilities</div>', unsafe_allow_html=True)
-            st.plotly_chart(build_confidence_chart(probs[sel_node]), use_container_width=True)
+            st.plotly_chart(build_confidence_chart(probs[sel_node]), use_container_width=True, key="conf_tab1")
 
     # TAB 2: Node inspector
     with tab2:
@@ -642,7 +642,7 @@ if st.session_state.probs is not None:
 
         st.markdown("---")
         st.markdown('<div class="section-head">Full probability distribution</div>', unsafe_allow_html=True)
-        st.plotly_chart(build_confidence_chart(probs[node_id]), use_container_width=True)
+        st.plotly_chart(build_confidence_chart(probs[node_id]), use_container_width=True, key="conf_tab2")
 
         st.markdown('<div class="section-head">Top-3 Predictions</div>', unsafe_allow_html=True)
         top3 = np.argsort(probs[node_id])[::-1][:3]
@@ -666,7 +666,7 @@ if st.session_state.probs is not None:
         ac1, ac2 = st.columns(2)
         with ac1:
             st.markdown('<div class="section-head">Class distribution</div>', unsafe_allow_html=True)
-            st.plotly_chart(build_dist_chart(preds), use_container_width=True)
+            st.plotly_chart(build_dist_chart(preds), use_container_width=True, key="dist_chart")
         with ac2:
             st.markdown('<div class="section-head">Mean confidence per class</div>', unsafe_allow_html=True)
             mean_conf = [float(probs[preds == c, c].mean() * 100) if (preds == c).sum() > 0 else 0 for c in range(7)]
@@ -685,7 +685,7 @@ if st.session_state.probs is not None:
                 yaxis=dict(color='#8B949E', gridcolor='#21262D', ticksuffix='%'),
                 height=260
             )
-            st.plotly_chart(fig_conf, use_container_width=True)
+            st.plotly_chart(fig_conf, use_container_width=True, key="mean_conf_chart")
 
         # Summary table
         st.markdown('<div class="section-head">Node summary table</div>', unsafe_allow_html=True)
