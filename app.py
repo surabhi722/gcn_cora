@@ -296,8 +296,8 @@ def load_model():
     """Load GCN ONNX model — copies both files to a temp dir with correct naming."""
     import tempfile, shutil
     tmp = tempfile.mkdtemp()
-    shutil.copy("/tmp/gcn.onnx",      os.path.join(tmp, "gcn.onnx"))
-    shutil.copy("/tmp/gcn.onnx.data", os.path.join(tmp, "gcn.onnx.data"))
+    shutil.copy("gcn.onnx",      os.path.join(tmp, "gcn.onnx"))
+    shutil.copy("gcn.onnx.data", os.path.join(tmp, "gcn.onnx.data"))
     sess = ort.InferenceSession(os.path.join(tmp, "gcn.onnx"))
     return sess
 
